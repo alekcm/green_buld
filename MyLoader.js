@@ -345,12 +345,25 @@ function createUnityInstance(canvas, config, onProgress) {
           openRequest.onsuccess = function (e) { initDatabase(e.target.result); };
           openRequest.onerror = function () { initDatabase(null); };
         }
+
+        // Workaround for WebKit bug 226547:
+        // On very first page load opening a connection to IndexedDB hangs without triggering onerror.
+        // Add a timeout that triggers the error handling code.
+        var indexedDBTimeout = setTimeout(function () {
+          if (typeof cache.database != "undefined")
+            return;
+          
+          initDatabase(null);  
+        }, 2000);
+
         var openRequest = indexedDB.open(UnityCacheDatabase.name);
         openRequest.onupgradeneeded = function (e) {
           var objectStore = e.target.result.createObjectStore(XMLHttpRequestStore.name, { keyPath: "url" });
           ["version", "company", "product", "updated", "revalidated", "accessed"].forEach(function (index) { objectStore.createIndex(index, index); });
         };
         openRequest.onsuccess = function (e) {
+          clearTimeout(indexedDBTimeout);
+
           var database = e.target.result;
           if (database.version < UnityCacheDatabase.version) {
             database.close();
@@ -359,8 +372,12 @@ function createUnityInstance(canvas, config, onProgress) {
             initDatabase(database);
           }
         };
-        openRequest.onerror = function () { initDatabase(null); };
+        openRequest.onerror = function () {
+          clearTimeout(indexedDBTimeout);
+          initDatabase(null);
+        };
       } catch (e) {
+        clearTimeout(indexedDBTimeout);
         initDatabase(null);
       }
     };
