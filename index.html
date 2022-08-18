@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <title>Косынка</title>
+
+     <script src="https://yandex.ru/games/sdk/v2"></script>
 </head>
 
 <body>
@@ -43,13 +45,13 @@
     loadingBar.style.display = "flex";
 
     createUnityInstance(document.querySelector("#unity-canvas"), {
-      dataUrl: "Build/GKosinka.data",
-      frameworkUrl: "Build/GKosinka.framework.js",
-      codeUrl: "Build/GKosinka.wasm",
+      dataUrl: "Build/buildgreen.data",
+      frameworkUrl: "Build/buildgreen.framework.js",
+      codeUrl: "Build/buildgreen.wasm",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "SevenWinds",
       productName: "Косынка",
-      productVersion: "1.38.4",
+      productVersion: "1.38.1",
     }, (progress) => {
       progressBarFull.style.width = 100 * progress + "%";
     }).then((unityInstance) => {
