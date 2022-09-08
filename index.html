@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <title>Косынка</title>
+
+     <script src="https://yandex.ru/games/sdk/v2"></script>
+</head>
+
+<body>
+    <div class="webgl-wrapper">
+        <div class="aspect"></div>
+        <div class="webgl-content">
+            <div id="unityContainer">
+                <canvas id="unity-canvas"
+                        style="background: #231F20"></canvas>
+                <div id="unity-loading-bar">
+                    <div id="unity-logo"></div>
+                    <div id="unity-progress-bar-empty">
+                        <div id="unity-progress-bar-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="MyLoader.js"></script>
+    <script>
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width,height=' + window.innerHeight + ', initial-scale=1.0';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+    </script>
+    <script>
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+
+    loadingBar.style.display = "flex";
+
+    createUnityInstance(document.querySelector("#unity-canvas"), {
+      dataUrl: "Build/Green2Web.data",
+      frameworkUrl: "Build/Green2Web.framework.js",
+      codeUrl: "Build/Green2Web.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "SevenWinds",
+      productName: "Косынка",
+      productVersion: "1.38.1",
+    }, (progress) => {
+      progressBarFull.style.width = 100 * progress + "%";
+    }).then((unityInstance) => {
+      loadingBar.style.display = "none";
+      myGameInstance = unityInstance;
+    });
+    </script>
+
+
+</body>
+
+</html>
